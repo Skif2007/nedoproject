@@ -1,45 +1,40 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
 }
 
 android {
     namespace = "com.example.test_api"
-    compileSdk = 36
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.test_api"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // 🔧 Выносим адрес сервера в конфиг
     buildTypes {
+        debug {
+            buildConfigField("String", "API_BASE_URL", "\"http://192.168.1.X:8000\"") // эмулятор
+            // Для телефона с тем же ПК: поменяй на "\"http://192.168.1.X:8000\""
+        }
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            buildConfigField("String", "API_BASE_URL", "\"http://192.168.1.X:8000\"")
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.activity)
-    implementation(libs.constraintlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 }

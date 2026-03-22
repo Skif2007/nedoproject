@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText etSearchName;
     private TextView tvResult;
 
-    private final String BASE_URL = "http://10.127.122.56:8000";  //10.0.2.2
+    private final String BASE_URL = Config.API_BASE_URL;;  //10.0.2.2
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler(Looper.getMainLooper());
 

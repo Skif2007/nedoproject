@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">test_api</string>
+    <string name="app_name">NedoProject</string>
+    <string name="login">Войти</string>
+    <string name="register">Регистрация</string>
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="empty_field">Заполните поле</string>
+    <string name="invalid_email">Некорректный email</string>
+    <string name="success">Успешно</string>
+    <string name="error">Ошибка</string>
 </resources>

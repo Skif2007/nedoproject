@@ -28,7 +28,7 @@ public class ShopActivity extends AppCompatActivity implements NavigationView.On
     private RecyclerView recyclerView;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private final String BASE_URL = "http://10.127.122.56:8000"; // для эмулятора
+    private final String BASE_URL = Config.API_BASE_URL; // для эмулятора
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private Handler handler = new Handler(Looper.getMainLooper());
     @Override
