@@ -2,133 +2,106 @@ package com.example.test_api;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.navigation.NavigationView;
+import com.example.test_api.utils.ApiHelper;
+import com.example.test_api.utils.ToastUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class ShopActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ShopActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private final String BASE_URL = Config.API_BASE_URL; // для эмулятора
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-    private Handler handler = new Handler(Looper.getMainLooper());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
 
+        // 🔝 Добавляем кнопку "Назад" в ActionBar
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Магазин");
+        }
+
         recyclerView = findViewById(R.id.recyclerView);
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-
-        // Устанавливаем обработчик для NavigationView
-        navigationView.setNavigationItemSelectedListener(this);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         fetchProducts();
     }
 
     private void fetchProducts() {
-        executor.execute(() -> {
-            HttpURLConnection urlConnection = null;
-            try {
-                URL url = new URL(BASE_URL + "/products/");
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setRequestProperty("Accept", "application/json");
-
-                int responseCode = urlConnection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = in.readLine()) != null) {
-                        response.append(line);
+        ApiHelper.get("/products/", new ApiHelper.Callback() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    JSONArray array = new JSONArray(response);
+                    List<Product> products = new ArrayList<>();
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+                        products.add(new Product(
+                                obj.getInt("id"),
+                                obj.getString("name"),
+                                obj.getDouble("price"),
+                                obj.getString("description"),
+                                // 🔗 Формируем полный URL картинки
+                                obj.getString("image_url").startsWith("http")
+                                        ? obj.getString("image_url")
+                                        : Config.API_BASE_URL + obj.getString("image_url")
+                        ));
                     }
-                    in.close();
-
-                    JSONArray jsonArray = new JSONArray(response.toString());
-                    List<Product> productList = new ArrayList<>();
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject obj = jsonArray.getJSONObject(i);
-                        int id = obj.getInt("id");
-                        String name = obj.getString("name");
-                        double price = obj.getDouble("price");
-                        String description = obj.getString("description");
-                        String imageUrl = BASE_URL + obj.getString("image_url");
-                        productList.add(new Product(id, name, price, description, imageUrl));
-                    }
-
-                    handler.post(() -> {
-                        ProductAdapter adapter = new ProductAdapter(productList, product -> {
-                            Intent intent = new Intent(ShopActivity.this, ProductDetailActivity.class);
-                            intent.putExtra("product_id", product.getId());
-                            intent.putExtra("product_name", product.getName());
-                            intent.putExtra("product_price", product.getPrice());
-                            intent.putExtra("product_description", product.getDescription());
-                            intent.putExtra("product_image_url", product.getImageUrl());
-                            startActivity(intent);
-                        });
-                        recyclerView.setAdapter(adapter);
+                    ProductAdapter adapter = new ProductAdapter(products, product -> {
+                        Intent intent = new Intent(ShopActivity.this, ProductDetailActivity.class);
+                        intent.putExtra("product_id", product.getId());
+                        intent.putExtra("product_name", product.getName());
+                        intent.putExtra("product_price", product.getPrice());
+                        intent.putExtra("product_description", product.getDescription());
+                        intent.putExtra("product_image_url", product.getImageUrl());
+                        startActivity(intent);
                     });
-                } else {
-                    showError("Ошибка загрузки товаров: " + responseCode);
+                    recyclerView.setAdapter(adapter);
+                } catch (Exception e) {
+                    ToastUtils.error(ShopActivity.this, "Ошибка: " + e.getMessage());
                 }
-            } catch (Exception e) {
-                showError("Ошибка: " + e.getMessage());
-            } finally {
-                if (urlConnection != null) urlConnection.disconnect();
+            }
+            @Override
+            public void onError(String error) {
+                ToastUtils.error(ShopActivity.this, error);
             }
         });
     }
 
-    private void showError(final String message) {
-        handler.post(() -> Toast.makeText(ShopActivity.this, message, Toast.LENGTH_SHORT).show());
+    // 🔙 Кнопка "Назад" в ActionBar
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
-    // Обработка выбора пунктов меню
+    // 🍔 Меню (опционально)
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.nav_home) {
-            Toast.makeText(this, "Главная", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_profile) {
-            Toast.makeText(this, "Профиль", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_settings) {
-            Toast.makeText(this, "Настройки", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_logout) {
-            Toast.makeText(this, "Выход", Toast.LENGTH_SHORT).show();
-            // Здесь можно вернуться на экран логина, например:
-            // Intent intent = new Intent(ShopActivity.this, MainActivity.class);
-            // startActivity(intent);
-            // finish();
-        }
-        drawerLayout.closeDrawers(); // Закрываем меню после выбора
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_shop, menu);
         return true;
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        executor.shutdown();
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_profile) {
+            startActivity(new Intent(this, UserProfileActivity.class));
+            return true;
+        } else if (id == R.id.nav_logout) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

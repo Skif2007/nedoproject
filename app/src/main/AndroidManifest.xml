@@ -10,7 +10,7 @@
         android:roundIcon="@drawable/ic_app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.NedoProject"
-        android:usesCleartextTraffic="true"> <!-- для HTTP, не для прода -->
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".MainActivity"
@@ -21,9 +21,8 @@
             </intent-filter>
         </activity>
 
-        <!-- Добавь остальные активности по аналогии -->
-        <activity android:name=".ProductDetailActivity" />
         <activity android:name=".ShopActivity" />
+        <activity android:name=".ProductDetailActivity" />
         <activity android:name=".UserProfileActivity" />
 
     </application>

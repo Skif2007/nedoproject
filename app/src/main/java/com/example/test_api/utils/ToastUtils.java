@@ -12,9 +12,7 @@ import com.example.test_api.R;
 public class ToastUtils {
 
     public static void show(Context context, String message, boolean isSuccess) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View layout = inflater.inflate(R.layout.toast_custom, null);
-
+        View layout = LayoutInflater.from(context).inflate(R.layout.toast_custom, null);
         ImageView icon = layout.findViewById(R.id.toast_icon);
         TextView text = layout.findViewById(R.id.toast_text);
 

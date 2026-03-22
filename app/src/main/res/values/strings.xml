@@ -1,11 +1,34 @@
 <resources>
     <string name="app_name">NedoProject</string>
-    <string name="login">Войти</string>
-    <string name="register">Регистрация</string>
+
+    <!-- Регистрация -->
+    <string name="registration">Регистрация</string>
+    <string name="first_name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="birth_year">Год рождения</string>
     <string name="email">Email</string>
+    <string name="phone">Телефон</string>
     <string name="password">Пароль</string>
-    <string name="empty_field">Заполните поле</string>
+    <string name="register">Зарегистрироваться</string>
+
+    <!-- Вход -->
+    <string name="login">Войти</string>
+    <string name="login_email">Email для входа</string>
+    <string name="login_password">Пароль</string>
+
+    <!-- Поиск -->
+    <string name="search">Поиск</string>
+    <string name="search_hint">Введите имя</string>
+    <string name="search_btn">Найти</string>
+    <string name="all_users">Все пользователи</string>
+
+    <!-- Сообщения -->
+    <string name="fill_all">Заполните все поля</string>
     <string name="invalid_email">Некорректный email</string>
-    <string name="success">Успешно</string>
+    <string name="invalid_year">Год должен быть 1900–2025</string>
+    <string name="invalid_phone">Телефон: 10–15 цифр, + и -</string>
+    <string name="short_password">Пароль от 4 символов</string>
+    <string name="success_register">✅ Регистрация успешна</string>
+    <string name="success_login">✓ Вход выполнен</string>
     <string name="error">Ошибка</string>
 </resources>

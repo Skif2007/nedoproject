@@ -4,16 +4,13 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
+    <!-- Фон: круг -->
     <path
         android:fillColor="@color/primary"
         android:pathData="M54,54m-48,0a48,48 0,1 1,96 0a48,48 0,1 1,-96 0"/>
 
-    <text
+    <!-- Буква "N" из путей -->
+    <path
         android:fillColor="#FFFFFF"
-        android:fontSize="48"
-        android:fontFamily="sans-serif-black"
-        android:text="N"
-        android:textAlign="center"
-        android:x="54"
-        android:y="68"/>
+        android:pathData="M38,72 L38,36 L44,36 L54,54 L54,36 L60,36 L60,72 L54,72 L44,54 L44,72 Z"/>
 </vector>

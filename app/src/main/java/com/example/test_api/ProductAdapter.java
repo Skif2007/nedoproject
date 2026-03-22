@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+
     private List<Product> products;
     private OnItemClickListener listener;
-    private ImageLoader imageLoader;
+    private ImageLoader imageLoader = new ImageLoader();
 
     public interface OnItemClickListener {
         void onItemClick(Product product);
@@ -21,12 +22,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public ProductAdapter(List<Product> products, OnItemClickListener listener) {
         this.products = products;
         this.listener = listener;
-        this.imageLoader = new ImageLoader();
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_product, parent, false);
         return new ViewHolder(view);
     }
 
